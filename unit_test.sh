@@ -3,7 +3,7 @@
 APP_NAME="host-inventory"  # name of app-sre "application" folder this component lives in
 IMAGE="quay.io/cloudservices/insights-inventory"
 BG_PID=1010101
-RANDOM_PORT=65000
+RANDOM_PORT=62212
 export LC_ALL=en_US.utf-8
 export LANG=en_US.utf-8
 
@@ -88,7 +88,7 @@ export INVENTORY_DB_USER=$(jq -r .adminUsername < db-creds.json)
 export INVENTORY_DB_PASS=$(jq -r .adminPassword < db-creds.json)
 export PGPASSWORD=$(jq -r .adminPassword < db-creds.json)
 
-oc port-forward svc/${APP_NAME}-db 62212:5432 &
+oc port-forward svc/${APP_NAME}-db $RANDOM_PORT:5432 &
 BG_PID=$!
 trap "killbg" EXIT ERR SIGINT SIGKILL TERM
 trap "nsrelease" EXIT ERR SIGINT SIGKILL TERM
