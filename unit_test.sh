@@ -51,8 +51,6 @@ fi
 # Deploy ClowdApp to get DB instance
 #
 
-cd ${WORKSPACE}
-
 NAMESPACE=$(bonfire namespace reserve)
 oc project $NAMESPACE
 
@@ -78,7 +76,7 @@ bonfire namespace wait-on-resources $NAMESPACE || { echo 'App did not deploy pro
 
 # Get a random port on the jenkins agent to forward
 echo "Getting a port to forward"
-random_unused_port
+# random_unused_port
 
 echo "Parsing secret details"
 oc get secret ${APP_NAME} -o json | jq -r '.data["cdappconfig.json"]' | base64 -d | jq .database > db-creds.json
@@ -90,7 +88,7 @@ export INVENTORY_DB_USER=$(jq -r .adminUsername < db-creds.json)
 export INVENTORY_DB_PASS=$(jq -r .adminPassword < db-creds.json)
 export PGPASSWORD=$(jq -r .adminPassword < db-creds.json)
 
-oc port-forward svc/${APP_NAME}-db $RANDOM_PORT:5432 &
+oc port-forward svc/${APP_NAME}-db 62212:5432 &
 BG_PID=$!
 trap "killbg" EXIT ERR SIGINT SIGKILL TERM
 trap "nsrelease" EXIT ERR SIGINT SIGKILL TERM
