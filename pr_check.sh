@@ -9,18 +9,12 @@ BG_PID=1010101
 RANDOM_PORT=65000
 export LC_ALL=en_US.utf-8
 export LANG=en_US.utf-8
-
+export APP_ROOT=$(pwd)
+export WORKSPACE=${WORKSPACE:-$APP_ROOT}  # if running in jenkins, use the build's workspace
+export IMAGE_TAG=$(git rev-parse --short=7 HEAD)
+export GIT_COMMIT=$(git rev-parse HEAD)
 cat /etc/redhat-release
 
-python3.6 -m venv .venv
-source .venv/bin/activate
-pip install pipenv
-pipenv install --dev
-
-if ! (pre-commit run --all-files); then
-  echo "pre-commit ecountered an issue"
-  exit 1
-fi
 # --------------------------------------------
 # Options that must be configured by app owner
 # --------------------------------------------
@@ -36,36 +30,17 @@ IQE_FILTER_EXPRESSION=""
 
 # Get bonfire helper scripts
 CICD_URL=https://raw.githubusercontent.com/RedHatInsights/bonfire/master/cicd
-curl -s $CICD_URL/bootstrap.sh -o bootstrap.sh
-source bootstrap.sh  # checks out bonfire and changes to "cicd" dir...
+curl -s $CICD_URL/build.sh -o build.sh
+curl -s $CICD_URL/deploy_ephemeral_env.sh -o deploy_ephemeral_env.sh
 
 # build the PR commit image
-cd ${WORKSPACE}
-
-if [[ -z "$QUAY_USER" || -z "$QUAY_TOKEN" ]]; then
-    echo "QUAY_USER and QUAY_TOKEN must be set"
-    exit 1
-fi
-
-if [[ -z "$RH_REGISTRY_USER" || -z "$RH_REGISTRY_TOKEN" ]]; then
-    echo "RH_REGISTRY_USER and RH_REGISTRY_TOKEN  must be set"
-    exit 1
-fi
-
-
-DOCKER_CONF="$PWD/.docker"
-mkdir -p "$DOCKER_CONF"
-docker --config="$DOCKER_CONF" login -u="$QUAY_USER" -p="$QUAY_TOKEN" quay.io
-docker --config="$DOCKER_CONF" login -u="$RH_REGISTRY_USER" -p="$RH_REGISTRY_TOKEN" registry.redhat.io
-docker --config="$DOCKER_CONF" build -t "${IMAGE}:${IMAGE_TAG}" $APP_ROOT -f $APP_ROOT/Dockerfile
-docker --config="$DOCKER_CONF" push "${IMAGE}:${IMAGE_TAG}"
-
+source build.sh
 
 # Run the django unit tests
 source unit_test.sh
 
 # Smoke test the App (iqe tests coming soon)
-source bonfire/cicd/deploy_ephemeral_env.sh
+source deploy_ephemeral_env.sh
 # source smoke_test.sh
 
 mkdir -p $WORKSPACE/artifacts
