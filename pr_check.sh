@@ -11,17 +11,6 @@ export LC_ALL=en_US.utf-8
 export LANG=en_US.utf-8
 
 cat /etc/redhat-release
-
-python3.6 -m venv venv
-source venv/bin/activate
-pip install pipenv
-pipenv install --dev
-
-if ! (pre-commit run --all-files); then
-  echo "pre-commit ecountered an issue"
-  exit 1
-fi
-
 # --------------------------------------------
 # Options that must be configured by app owner
 # --------------------------------------------

@@ -71,7 +71,10 @@ apps:
 EOF
 
 bonfire local get --set-image-tag ${APP_NAME}=${IMAGE_TAG} -a ${APP_NAME} | oc apply -f -
-bonfire namespace wait-on-resources $NAMESPACE
+
+# Wait on the App to be Ready. Do not run unit tests if you do not become Ready.
+bonfire namespace wait-on-resources $NAMESPACE || { echo 'App did not deploy properly' ; exit 1; }
+
 
 #
 # Grab DB creds
