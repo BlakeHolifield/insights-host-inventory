@@ -72,7 +72,7 @@ apps:
     IMAGE: $IMAGE
 EOF
 
-bonfire config get -l -a ${APP_NAME} | oc apply -f -
+bonfire local get -a ${APP_NAME} | oc apply -f -
 bonfire namespace wait-on-resources $NAMESPACE
 
 #
