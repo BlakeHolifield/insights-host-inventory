@@ -45,6 +45,8 @@ fi
 # Deploy ClowdApp to get DB instance
 #
 
+cd ${WORKSPACE}
+
 NAMESPACE=$(bonfire namespace reserve)
 oc project $NAMESPACE
 
