@@ -33,7 +33,7 @@ function nsrelease {
   bonfire namespace release $NAMESPACE
 }
 
-function random_unused_port { 
+function random_unused_port {
     local port=$(shuf -i 2000-65000 -n 1)
     netstat -lat | grep $port > /dev/null
     if [[ $? == 1 ]] ; then
