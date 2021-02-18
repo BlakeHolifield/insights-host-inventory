@@ -77,8 +77,10 @@ bonfire namespace wait-on-resources $NAMESPACE || { echo 'App did not deploy pro
 #
 
 # Get a random port on the jenkins agent to forward
+echo "Getting a port to forward"
 random_unused_port
 
+echo "Parsing secret details"
 oc get secret ${APP_NAME} -o json | jq -r '.data["cdappconfig.json"]' | base64 -d | jq .database > db-creds.json
 
 export INVENTORY_DB_NAME=$(jq -r .name < db-creds.json)
@@ -90,10 +92,12 @@ export PGPASSWORD=$(jq -r .adminPassword < db-creds.json)
 
 oc port-forward svc/${APP_NAME}-db $RANDOM_PORT:5432 &
 BG_PID=$!
-trap killbg EXIT SIGINT SIGKILL TERM
-trap nsrelease SIGINT SIGKILL TERM
+trap "killbg" EXIT ERR SIGINT SIGKILL TERM
+trap "nsrelease" EXIT ERR SIGINT SIGKILL TERM
 
+echo "DB migration"
 python manage.py db upgrade
+echo "Running pytest"
 pytest --cov=. --junitxml=junit.xml --cov-report html -sv
 
 mkdir -p $WORKSPACE/artifacts
