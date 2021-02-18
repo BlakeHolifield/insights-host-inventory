@@ -12,8 +12,8 @@ export LANG=en_US.utf-8
 
 cat /etc/redhat-release
 
-python3.6 -m venv venv
-source venv/bin/activate
+python3.6 -m venv .venv
+source .venv/bin/activate
 pip install pipenv
 pipenv install --dev
 

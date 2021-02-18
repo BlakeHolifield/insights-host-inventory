@@ -36,9 +36,7 @@ function random_unused_port {
 # Install Bonfire
 #
 if ! (which bonfire >/dev/null); then
-    git clone https://github.com/RedHatInsights/bonfire.git
-    pip install --upgrade pip setuptools wheel pipenv tox psycopg2-binary
-    pip install ./bonfire
+  pip install crc-bonfire
 fi
 
 #
