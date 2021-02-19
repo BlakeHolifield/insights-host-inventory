@@ -44,7 +44,7 @@ function random_unused_port { local port=$(shuf -i 2000-65000 -n 1)
 # Install Bonfire
 #
 if ! (which bonfire >/dev/null); then
-  # Pin to local config change commit to avoid other breaking changes until 
+  # Pin to local config change commit to avoid other breaking changes until
   # Bonfire has new refactor settled
   pip install "git+git@github.com:RedHatInsights/bonfire.git@e5321c3dab481f7d607f0609d8d2ec0a83f3bead#egg=crc_bonfire"
 fi
