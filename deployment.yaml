@@ -9,6 +9,18 @@ objects:
     name: host-inventory
   spec:
     envName: ${ENV_NAME}
+    jobs:
+    - name: unit-tests
+      podSpec:
+        name: unit-tests
+        image: ${IMAGE}:${IMAGE_TAG}
+        env:
+        - name: CLOWDER_ENABLED
+          value: "true"
+        command:
+          - python
+          - -m
+          - pytest
     deployments:
     - name: service
       minReplicas: ${{REPLICAS_SVC}}
