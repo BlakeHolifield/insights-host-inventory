@@ -147,6 +147,17 @@ class Config:
         base_url_path = f"/{path_prefix}/{app_name}"
         return base_url_path
 
+    # Returns a dict with the populated db items for the unit test fixtures
+    def get_db_data(self):
+        db_data = {
+            "INVENTORY_DB_NAME": self._db_name,
+            "INVENTORY_DB_PASS": self._db_password,
+            "INVENTORY_DB_USER": self._db_user,
+            "INVENTORY_DB_HOST": self._db_host,
+            "INVENTORY_DB_PORT": str(self._db_port),
+        }
+        return db_data
+
     def _build_api_path(self):
         base_url_path = self._build_base_url_path()
         version = "v1"

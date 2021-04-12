@@ -9,6 +9,20 @@ objects:
     name: host-inventory
   spec:
     envName: ${ENV_NAME}
+    iqe:
+      plugin: host-inventory
+    jobs:
+    - name: unit-tests
+      podSpec:
+        name: unit-tests
+        image: ${IMAGE}:${IMAGE_TAG}
+        env:
+        - name: CLOWDER_ENABLED
+          value: "true"
+        command:
+          - python
+          - -m
+          - pytest
     deployments:
     - name: service
       minReplicas: ${{REPLICAS_SVC}}
@@ -179,7 +193,9 @@ objects:
         - name: KAFKA_GROUP
           value: inventory
         - name: KAFKA_HOST_INGRESS_TOPIC
-          value: platform.inventory.host-ingress-p1
+          value: platform.inventory.host-ingress
+        - name: KAFKA_CONSUMER_TOPIC
+          value: platform.inventory.host-ingress
         - name: KAFKA_HOST_INGRESS_GROUP
           value: inventory-mq
         - name: KAFKA_SECONDARY_TOPIC_ENABLED
@@ -221,6 +237,8 @@ objects:
       name: host-inventory
       version: 12
     kafkaTopics:
+      - topicName: platform.inventory.system-profile
+        partitions: 1
       - topicName: platform.system-profile
         partitions: 1
       - topicName: platform.payload-status

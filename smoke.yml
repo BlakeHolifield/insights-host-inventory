@@ -1,0 +1,14 @@
+---
+apiVersion: cloud.redhat.com/v1alpha1
+kind: ClowdJobInvocation
+metadata:
+  name: host-inventory-iqe
+spec:
+  appName: host-inventory
+  iqe:
+    # imageTag: host-inventory
+    ui: true
+    marker: "smoke"
+    # marker: "smoke AND (outage)"
+    dynaconfEnvName: "clowder_smoke"
+    filter: ""
