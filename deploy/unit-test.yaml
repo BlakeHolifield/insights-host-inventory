@@ -1,0 +1,9 @@
+---
+apiVersion: cloud.redhat.com/v1alpha1
+kind: ClowdJobInvocation
+metadata:
+  name: unit-tests
+spec:
+  appName: host-inventory
+  jobs:
+    - unit-tests
